@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>List User</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2>User List</h2>
+    <% if (cookies.token) { %>
+        <div class="text-right">
+            <a href="/user" class="btn btn-warning">Profile</a>
+        </div>
+    <% } else { %>
+        <div class="text-right">
+            <a href="/login" class="btn btn-info">Login</a>
+            <a href="/register" class="btn btn-success">Register</a>
+        </div>
+    <% }%>
+
+    <% users.forEach(user => { %>
+        <div class="card mt-4">
+            <div class= "card-body">
+                <h4 class="card-title">
+                    <%= user.username %>
+                </h4>
+                <div class="card-subtitle text-muted mb-2"> <%= user.password %></div>
+                <div class="card-text"> <%= user.id %> </div>
+                <form class="d-inline" action="/user/<%= user.id %>?_method=DELETE" method="POST">
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    <%   } ) %>
+
+
+
+</div>
+
+</body>
+</html>
