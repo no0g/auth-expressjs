@@ -9,7 +9,7 @@ const app = express()
 dotenv.config()
 const PORT = process.env.SERVER_PORT || 3000
 //connect DB
-mongoose.connect(process.env.DB_URI,{ useUnifiedTopology: true , useNewUrlParser: true},() => console.log("Connected to MongoDB"))
+mongoose.connect(process.env.DB_URI,{ useUnifiedTopology: true , useNewUrlParser: true, useFindAndModify: false},() => console.log("Connected to MongoDB"))
 
 //middlewares
 app.set('view engine','ejs')
@@ -26,14 +26,19 @@ app.get('/login', (req,res) => {
     const token = req.cookies.token
     if(token) return  res.redirect('/');
     
-    res.render('login',{query: req.query})
+    //default value of form
+    const user = new User()
+    res.render('login',{query: req.query, user:user})
 })
 
 app.get('/register', (req, res) => {
     //logged in or not
     const token = req.cookies.token
     if(token) return  res.redirect('/');
-    res.render('register',{query:req.query})
+
+    // default falue of form 
+    const user = new User()
+    res.render('register',{query:req.query, user: user})
 })
 app.get('/', async (req,res) =>{
     // pass cookie to page

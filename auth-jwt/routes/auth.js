@@ -15,6 +15,26 @@ const Schema = Joi.object({
     password : Joi.string().min(8).required()
 })
 
+router.get('/:id',verifyAuth ,async ( req, res ) => {
+
+    const user = await User.findById(req.params.id)
+    if(!user) return  res.redirect('/');
+    res.render('edit',{user: user, query: req.query})
+})
+
+
+router.get('/',verifyAuth ,async (req,res)=>{
+    const token = req.cookies.token
+    const data = jwt.verify(token,process.env.TOKEN_SECRET)
+    try{
+        const user = await User.findById(data._id)
+        res.render('user',{user : user, query: req.query})
+    }catch(err){
+        console.log(err)
+    }
+    
+})
+
 router.post('/login', async (req,res)=>{
     // Check logged in or not
     const token = req.cookies.token
@@ -29,18 +49,6 @@ router.post('/login', async (req,res)=>{
     }else {
          res.redirect('/login/?message=wrongcreds');
     }
-})
-
-router.get('/',verifyAuth ,async (req,res)=>{
-    const token = req.cookies.token
-    const data = jwt.verify(token,process.env.TOKEN_SECRET)
-    try{
-        const user = await User.findById(data._id)
-        res.render('user',{user : user})
-    }catch(err){
-        console.log(err)
-    }
-    
 })
 
 router.post('/register', async (req, res) => {
@@ -88,6 +96,9 @@ router.post('/logout', (req, res) => {
 });
 
 router.delete('/:id',verifyAuth, async (req,res) => {
+    const token = req.cookies.token
+    const value = jwt.verify(token,process.env.TOKEN_SECRET)
+    if(value._id === req.params.id) return  res.redirect('/'); 
     try{
         let user = await User.findByIdAndDelete(req.params.id)
         var message = encodeURIComponent("Deleted Successfully")
@@ -100,7 +111,17 @@ router.delete('/:id',verifyAuth, async (req,res) => {
     
 })
 
+router.put('/:id', verifyAuth, async (req, res) => {
+    try{
+        const hashed = await bcrypt.hash(req.body.password,10)
+        const user = await User.findByIdAndUpdate(req.params.id, {username: req.body.username,password: hashed})
+        res.redirect('/user/'+req.params.id+'?message=success');
+    }catch(err){
+        console.log(err)
+        res.redirect('/user/'+req.params.id+'?message=fail')
 
+    }
+});
 
 
 module.exports = router

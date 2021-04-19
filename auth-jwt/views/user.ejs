@@ -12,13 +12,15 @@
 
 <div class="container">
   <h2>Hi, <%= user.username %> </h2>
-  <div class="">
-    <a href="/" class="btn btn-info">Home</a>
-    <form class="" action="/user/logout" method="POST">
-        <button class="btn btn-danger" type="submit">Logout</button>
+  <div class="card">
+    <a href="/" class="btn btn-info col-sm-1">Home</a>
+    <form class="col-sm-3" action="/user/logout" method="POST">
+        <button class="btn btn-danger col-sm-4" type="submit">Logout</button>
     </form>
   </div>
-  <p>Welcome to your profile</p>
+  <div class="col-sm-11">
+    <h3>Welcome</h3>
+  </div>
 
 </div>
 
